@@ -8,6 +8,8 @@ vocabulary identifiers, error codes, and entity shapes the API speaks.
 
 No runtime dependencies. Pure types, plus a handful of small helpers and enums.
 
+> **The [wiki](https://github.com/ontomorph-core/holon-types/wiki) has the full guide:** getting started, concepts, guides, use cases, API reference, and FAQ.
+
 ```bash
 npm install @ontomorph/holon-types
 # pnpm add @ontomorph/holon-types
