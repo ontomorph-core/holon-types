@@ -1,18 +1,18 @@
-# @holon/types
+# @ontomorph/holon-types
 
 Shared TypeScript types, enums, error classes, and result helpers for the HOLON
 clinical-knowledge API. This is the foundation package. The
-[`@holon/client`](https://www.npmjs.com/package/@holon/client) SDK and the HOLON
+[`@ontomorph/holon-client`](https://www.npmjs.com/package/@ontomorph/holon-client) SDK and the HOLON
 services all build on the definitions here, so you can import the exact
 vocabulary identifiers, error codes, and entity shapes the API speaks.
 
 No runtime dependencies. Pure types, plus a handful of small helpers and enums.
 
 ```bash
-npm install @holon/types
-# pnpm add @holon/types
-# yarn add @holon/types
-# bun add @holon/types
+npm install @ontomorph/holon-types
+# pnpm add @ontomorph/holon-types
+# yarn add @ontomorph/holon-types
+# bun add @ontomorph/holon-types
 ```
 
 ## Concepts
@@ -42,7 +42,7 @@ speaks the same codes.
 ### Error codes and classes
 
 ```ts
-import { ErrorCode, HolonError, ValidationError } from "@holon/types";
+import { ErrorCode, HolonError, ValidationError } from "@ontomorph/holon-types";
 
 throw new ValidationError("age must be a positive integer");
 
@@ -63,7 +63,7 @@ A lightweight discriminated-union result type used across the HOLON services,
 with `ok()` and `err()` constructors:
 
 ```ts
-import { ok, err, ErrorCode, type ServiceResult } from "@holon/types";
+import { ok, err, ErrorCode, type ServiceResult } from "@ontomorph/holon-types";
 
 function lookup(id: number): ServiceResult<Concept> {
   const row = find(id);
@@ -74,7 +74,7 @@ function lookup(id: number): ServiceResult<Concept> {
 ### Vocabulary and domain enums
 
 ```ts
-import { VocabularyId, DomainId, StandardConcept, MappingEquivalence } from "@holon/types";
+import { VocabularyId, DomainId, StandardConcept, MappingEquivalence } from "@ontomorph/holon-types";
 
 VocabularyId.SNOMED_CT; // "SNOMED-CT"
 VocabularyId.RXNORM;    // "RxNorm"
@@ -88,7 +88,7 @@ flags, and the `MappingEquivalence` and `MappingOrigin` classifiers.
 ### HOLON URI helpers
 
 ```ts
-import { HOLON_URI_SCHEME, type HolonUriParts, MIME_TURTLE } from "@holon/types";
+import { HOLON_URI_SCHEME, type HolonUriParts, MIME_TURTLE } from "@ontomorph/holon-types";
 // HOLON_URI_SCHEME === "holon"; parse and emit holon:… concept URIs, serialize as text/turtle
 ```
 
@@ -104,17 +104,17 @@ definition:
 
 ## When to use this directly
 
-Most applications should install [`@holon/client`](https://www.npmjs.com/package/@holon/client),
+Most applications should install [`@ontomorph/holon-client`](https://www.npmjs.com/package/@ontomorph/holon-client),
 which re-exports the types it needs and gives you the HTTP methods too. Reach for
-`@holon/types` on its own when you are:
+`@ontomorph/holon-types` on its own when you are:
 
 - building your own transport, or a server that speaks the HOLON contract, or
 - sharing HOLON enums and error codes across a codebase without pulling in the client.
 
 ## Related packages
 
-- [`@holon/client`](https://www.npmjs.com/package/@holon/client): the HTTP client built on these types.
-- [`@dtp/sdk`](https://www.npmjs.com/package/@dtp/sdk): the DTP digital-twin SDK.
+- [`@ontomorph/holon-client`](https://www.npmjs.com/package/@ontomorph/holon-client): the HTTP client built on these types.
+- [`@ontomorph/dtp-sdk`](https://www.npmjs.com/package/@ontomorph/dtp-sdk): the DTP digital-twin SDK.
 
 ## Documentation and support
 
