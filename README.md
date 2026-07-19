@@ -1,12 +1,12 @@
 # @holon/types
 
-Shared TypeScript types, enums, error classes, and result helpers for the
-**HOLON clinical-knowledge API**. This is the foundation package: the
+Shared TypeScript types, enums, error classes, and result helpers for the HOLON
+clinical-knowledge API. This is the foundation package. The
 [`@holon/client`](https://www.npmjs.com/package/@holon/client) SDK and the HOLON
-services all build on the definitions here, so you can import the exact same
+services all build on the definitions here, so you can import the exact
 vocabulary identifiers, error codes, and entity shapes the API speaks.
 
-Zero runtime dependencies. Pure types plus a handful of tiny helpers and enums.
+No runtime dependencies. Pure types, plus a handful of small helpers and enums.
 
 ```bash
 npm install @holon/types
@@ -15,9 +15,31 @@ npm install @holon/types
 # bun add @holon/types
 ```
 
+## Concepts
+
+A quick orientation to the domain these types describe.
+
+**Concept.** A single clinical idea (a drug, a lab test, a diagnosis) with a
+stable id, independent of which coding system named it. `Concept`,
+`ConceptProjection`, and friends model it.
+
+**Vocabulary.** A source coding system such as SNOMED CT, RxNorm, or LOINC. The
+`VocabularyId` enum lists the ones HOLON supports.
+
+**Domain.** What kind of thing a concept is (a `Drug`, a `Measurement`, a
+`Condition`). The `DomainId` enum names them.
+
+**ServiceResult.** How every HOLON service returns success or failure without
+throwing: `ok(data)` or `err(message, code)`. Callers branch on `.success`
+instead of wrapping each call in try/catch.
+
+**ErrorCode and HolonError.** One shared enum of failure reasons, and one error
+class that carries it. Whatever surfaces an error, from the client to a service,
+speaks the same codes.
+
 ## What's inside
 
-### Error codes & classes
+### Error codes and classes
 
 ```ts
 import { ErrorCode, HolonError, ValidationError } from "@holon/types";
@@ -28,17 +50,17 @@ throw new ValidationError("age must be a positive integer");
 if (err instanceof HolonError && err.code === ErrorCode.CONCEPT_NOT_FOUND) { … }
 ```
 
-- `ErrorCode` — the enum every HOLON error and error response uses
+- `ErrorCode`: the enum every HOLON error and error response uses
   (`CONCEPT_NOT_FOUND`, `NO_MAPPING_FOUND`, `INTERACTION_CHECK_FAILED`,
-  `UNAUTHORIZED`, `RATE_LIMIT_EXCEEDED`, `VALIDATION_ERROR`, …).
-- `HolonError` — base error class (`.code: ErrorCode`, `.details?: unknown`).
-- `InvalidEclError`, `InvalidCqlError`, `ValidationError`, `TransactionError` —
+  `UNAUTHORIZED`, `RATE_LIMIT_EXCEEDED`, `VALIDATION_ERROR`, and more).
+- `HolonError`: the base error class (`.code: ErrorCode`, `.details?: unknown`).
+- `InvalidEclError`, `InvalidCqlError`, `ValidationError`, `TransactionError`:
   specific subclasses thrown by the query and validation layers.
 
 ### `ServiceResult` helpers
 
 A lightweight discriminated-union result type used across the HOLON services,
-with `ok()` / `err()` constructors:
+with `ok()` and `err()` constructors:
 
 ```ts
 import { ok, err, ErrorCode, type ServiceResult } from "@holon/types";
@@ -49,7 +71,7 @@ function lookup(id: number): ServiceResult<Concept> {
 }
 ```
 
-### Vocabulary & domain enums
+### Vocabulary and domain enums
 
 ```ts
 import { VocabularyId, DomainId, StandardConcept, MappingEquivalence } from "@holon/types";
@@ -59,46 +81,46 @@ VocabularyId.RXNORM;    // "RxNorm"
 VocabularyId.LOINC;     // "LOINC"
 ```
 
-Covers the supported source vocabularies (`SNOMED-CT`, `RxNorm`, `LOINC`,
-`ICD11`, `HPO`, `FMA`, and more), concept `DomainId`s, `StandardConcept` flags,
-and mapping `MappingEquivalence` / `MappingOrigin` classifiers.
+These cover the supported source vocabularies (`SNOMED-CT`, `RxNorm`, `LOINC`,
+`ICD11`, `HPO`, `FMA`, and others), concept `DomainId`s, `StandardConcept`
+flags, and the `MappingEquivalence` and `MappingOrigin` classifiers.
 
 ### HOLON URI helpers
 
 ```ts
 import { HOLON_URI_SCHEME, type HolonUriParts, MIME_TURTLE } from "@holon/types";
-// HOLON_URI_SCHEME === "holon"; parse/emit holon:… concept URIs, serialize as text/turtle
+// HOLON_URI_SCHEME === "holon"; parse and emit holon:… concept URIs, serialize as text/turtle
 ```
 
-### Entity & response shapes
+### Entity and response shapes
 
-Interfaces mirroring exactly what the API returns, so client code and server
-code share one definition:
+Interfaces mirroring exactly what the API returns, so client and server share one
+definition:
 
-- **Concepts** — `Concept`, `ConceptProjection`, `IndexableConcept`, `ConceptAncestor`, `ConceptMapping`, `ConceptId`.
-- **Clinical** — `DrugInteractionSeverity`, `EvidenceGrade`, `ConceptMapEquivalence`, `ConceptRelationshipType`.
-- **API** — `ConceptResponse`, `AncestryResponse`, `DescendantsResponse`, `TranslationResponse`, `HealthResponse`.
-- **Curation** — `CurationStatus`, `ConsumerRole`, `VocabularyReleaseStatus`, `UnmappedConcept`, `UnmappedPage`.
+- **Concepts:** `Concept`, `ConceptProjection`, `IndexableConcept`, `ConceptAncestor`, `ConceptMapping`, `ConceptId`.
+- **Clinical:** `DrugInteractionSeverity`, `EvidenceGrade`, `ConceptMapEquivalence`, `ConceptRelationshipType`.
+- **API:** `ConceptResponse`, `AncestryResponse`, `DescendantsResponse`, `TranslationResponse`, `HealthResponse`.
+- **Curation:** `CurationStatus`, `ConsumerRole`, `VocabularyReleaseStatus`, `UnmappedConcept`, `UnmappedPage`.
 
 ## When to use this directly
 
 Most applications should install [`@holon/client`](https://www.npmjs.com/package/@holon/client),
-which re-exports the types it needs and gives you the HTTP methods too. Install
+which re-exports the types it needs and gives you the HTTP methods too. Reach for
 `@holon/types` on its own when you are:
 
-- building your own transport or a server that speaks the HOLON contract, or
-- sharing HOLON enums/error codes across a codebase without pulling in the client.
+- building your own transport, or a server that speaks the HOLON contract, or
+- sharing HOLON enums and error codes across a codebase without pulling in the client.
 
 ## Related packages
 
-- [`@holon/client`](https://www.npmjs.com/package/@holon/client) — the HTTP client built on these types.
-- [`@dtp/sdk`](https://www.npmjs.com/package/@dtp/sdk) — the DTP digital-twin SDK.
+- [`@holon/client`](https://www.npmjs.com/package/@holon/client): the HTTP client built on these types.
+- [`@dtp/sdk`](https://www.npmjs.com/package/@dtp/sdk): the DTP digital-twin SDK.
 
-## Documentation & support
+## Documentation and support
 
 - Developer docs: <https://developer.ontomorph.com/docs>
 - Issues: <https://github.com/ontomorph-core/holon-types/issues>
 
 ## License
 
-UNLICENSED — © OntoMorph. Usage governed by your OntoMorph platform agreement.
+UNLICENSED. © OntoMorph. Usage is governed by your OntoMorph platform agreement.
